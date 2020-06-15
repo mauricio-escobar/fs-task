@@ -38,7 +38,7 @@ The bonus part if you want extras points, if you don't have time for it, its coo
 
 - Use at least one design pattern.
 
-- Implement a cash system (using redis , or service workers ...)
+- Implement a cache system (using redis , or service workers ...)
 
 - Add offline mode feature.
 
