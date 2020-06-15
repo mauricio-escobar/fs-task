@@ -2,14 +2,14 @@ import React, { Component, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import  {useDarkMode} from "./components/useDarkMode"
-import Toggle from "./components/Toggler"
-import AddTask from "./components/task-add.component";
-import TaskDetail from "./components/task-detail.component";
-import TasksList from "./components/tasks-list.component";
+import  {useDarkMode} from "./components/theme/useDarkMode"
+import Toggle from "./components/theme/Toggler"
+import AddTask from "./components/tasks/task-add.component";
+import TaskDetail from "./components/tasks/task-detail.component";
+import TasksList from "./components/tasks/tasks-list.component";
 import {ThemeProvider} from "styled-components";
-import { GlobalStyles } from "./components/Globalstyle";
-import { lightTheme, darkTheme } from "./components/Themes"
+import { GlobalStyles } from "./components/theme/Globalstyle";
+import { lightTheme, darkTheme } from "./components/theme/Themes"
 
 const App = () => {
 
@@ -18,7 +18,7 @@ const App = () => {
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
 
   if(!mountedComponent) return <div/>
-  
+
   return (
     <Router>
       <ThemeProvider theme={themeMode}>

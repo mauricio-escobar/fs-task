@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import TaskDataService from "../services/task.service";
+import TaskDataService from "../../services/task.service";
 import { Link } from "react-router-dom";
 
 export default class Task extends Component {
