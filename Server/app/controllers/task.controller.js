@@ -34,8 +34,12 @@ exports.create = (req, res) => {
 
 // Retireve all Tasks from the database
 exports.findAll = (req, res) => {
+
+	const title = req.query.title;
+  	var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  	
 	// get all tasks
-	Task.findAll()
+	Task.findAll({ where: condition })
 		.then(data => {
 			res.send(data);
 		})

@@ -9,12 +9,14 @@ export default class AddTask extends Component {
     this.onChangeDescription = this.onChangeDescription.bind(this);
     this.saveTask = this.saveTask.bind(this);
     this.newTask = this.newTask.bind(this);
+    this.closeMessage = this.closeMessage.bind(this);
 
     this.state = {
       id: null,
       title: "",
       description: "", 
-      submitted: false
+      submitted: false,
+      message: "",
     };
   }
 
@@ -42,12 +44,15 @@ export default class AddTask extends Component {
           id: response.data.id,
           title: response.data.title,
           description: response.data.description,
-
-          submitted: true
+          message: "You submitted successfully!",
+          submitted: true,
         });
         console.log(response.data);
       })
       .catch(e => {
+        this.setState({
+          message: 'Error Occurred while creating a new task.'
+        })
         console.log(e);
       });
   }
@@ -57,39 +62,22 @@ export default class AddTask extends Component {
       id: null,
       title: "",
       description: "",
-
       submitted: false
     });
   }
 
+  closeMessage() {
+    this.setState({
+      submitted: false
+    })
+  }
+
   render() {
+    const { submitted } = this.state;
     return (
       <div className="submit-form">
-        {this.state.submitted ? (
           <div>
-            <h4>You submitted successfully!</h4>
-            <div className="row col-md-12">
-              <div className="col-md-1">
-                <button onClick={this.newTask} className="btn btn-success">
-                  Add
-                </button>  
-              </div>
-              <div className="col-md-1">
-                <Link to={"/tasks"}>
-                  <button className="btn btn-primary">
-                    Back
-                  </button>
-                </Link>
-              </div>
-            </div>
-            <Link to={"/tasks"} className="nav-link">
-              <button className="btn btn-primary">
-                Back
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <div>
+            <h4>Add Task</h4>
             <div className="form-group">
               <label htmlFor="title">Title</label>
               <input
@@ -118,21 +106,32 @@ export default class AddTask extends Component {
             </div>
             <div className="row col-md-12">
               <div className="col-md-1">
-                <button onClick={this.saveTask} className="btn btn-success">
+                <button onClick={this.saveTask} className="btn btn-sm btn-success">
                   Submit
                 </button>  
               </div>
               <div className="col-md-1">
                 <Link to={"/tasks"}>
-                  <button className="btn btn-primary">
+                  <button className="btn btn-sm btn-primary">
                     Back
                   </button>
                 </Link>
               </div>
             </div>
-            
+
+            {this.state.message && 
+              <div className={ submitted ? "toast show" : "toast"} role="alert" aria-live="assertive" aria-atomic="true">
+                <div className="toast-header">
+                  <strong className="mr-auto">Info</strong>
+                  <button type="button" className="ml-2 mb-1 close" onClick={ this.closeMessage } aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="toast-body">
+                  { this.state.message }
+                </div>
+            </div>}
           </div>
-        )}
       </div>
     );
   }

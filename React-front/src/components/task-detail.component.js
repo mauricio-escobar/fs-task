@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import TaskDataService from "../services/task.service";
+import { Link } from "react-router-dom";
 
 export default class Task extends Component {
   constructor(props) {
@@ -9,6 +10,7 @@ export default class Task extends Component {
     this.getTask = this.getTask.bind(this);
     this.updateTask = this.updateTask.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
+    this.closeMessage = this.closeMessage.bind(this);
 
     this.state = {
       currentTask: {
@@ -16,7 +18,8 @@ export default class Task extends Component {
         title: "",
         description: "",
       },
-      message: ""
+      message: null,
+      showToast: false
     };
   }
 
@@ -69,7 +72,8 @@ export default class Task extends Component {
       .then(response => {
         console.log(response.data);
         this.setState({
-          message: "The task was updated successfully!"
+          message: "The task was updated successfully!",
+          showToast: true,
         });
       })
       .catch(e => {
@@ -88,14 +92,21 @@ export default class Task extends Component {
       });
   }
 
+  closeMessage() {
+    console.log('asfda');
+    this.setState({
+      showToast: false
+    });
+  }
+
   render() {
-    const { currentTask } = this.state;
+    const { currentTask, showToast } = this.state;
 
     return (
       <div>
         {currentTask ? (
           <div className="edit-form">
-            <h4>Task</h4>
+            <h4>Edit Task</h4>
             <form>
               <div className="form-group">
                 <label htmlFor="title">Title</label>
@@ -109,31 +120,46 @@ export default class Task extends Component {
               </div>
               <div className="form-group">
                 <label htmlFor="description">Description</label>
-                <input
-                  type="text"
+                <textarea
                   className="form-control"
                   id="description"
                   value={currentTask.description}
                   onChange={this.onChangeDescription}
+                  rows="10"
+                  cols="20"
                 />
               </div>
             </form>
-
-            <button
-              className="badge badge-danger mr-2"
-              onClick={this.deleteTask}
-            >
-              Delete
-            </button>
-
-            <button
-              type="submit"
-              className="badge badge-success"
-              onClick={this.updateTask}
-            >
-              Update
-            </button>
-            <p>{this.state.message}</p>
+            <div className="row col-md-12">
+              <div className="col-md-1">
+                <button
+                  type="submit"
+                  className="btn btn-sm btn-success"
+                  onClick={this.updateTask}
+                >
+                  Update
+                </button>
+              </div>
+              <div className="col-md-1">
+                <Link to={"/tasks"}>
+                  <button className="btn btn-sm btn-primary">
+                    Back
+                  </button>
+                </Link>  
+              </div>
+            </div>
+            {this.state.message && 
+            <div className={ showToast ? "toast show" : "toast"} role="alert" aria-live="assertive" aria-atomic="true">
+              <div className="toast-header">
+                <strong className="mr-auto">Info</strong>
+                <button type="button" className="ml-2 mb-1 close" onClick={ this.closeMessage } aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="toast-body">
+                { this.state.message }
+              </div>
+            </div> }
           </div>
         ) : (
           <div>
