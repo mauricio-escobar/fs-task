@@ -72,7 +72,6 @@ export default class TasksList extends Component {
     if (window.confirm('Are you going to delete all tasks?')) {
       TaskDataService.deleteAll()
         .then(response => {
-          console.log(response.data);
           this.refreshList();
         })
         .catch(e => {
@@ -110,7 +109,6 @@ export default class TasksList extends Component {
   }
 
   changePage(page_num) {
-    console.log('current page: ', page_num);
     let page_items = this.state.tasks.slice(page_num * this.state.perPage, (page_num + 1) * this.state.perPage);
     this.setState({
       currentPage: page_num,
@@ -129,7 +127,7 @@ export default class TasksList extends Component {
         );
     }
 
-    return (
+return (
       <div className="list row">
         <div className="row col-md-12">
           <div className="col-md-6">

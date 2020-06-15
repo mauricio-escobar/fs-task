@@ -36,10 +36,12 @@
   border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
+/* button */
 .action-button {
   margin-left: 10px;
 }
 
+/* message from server */
 .submit-form {
   max-width: 70vw;
   margin: auto;
@@ -52,6 +54,10 @@
 .edit-form {
   max-width: 70vw;
   margin: auto;
+}
+
+.table {
+  cursor: pointer;
 }
 
 @media (prefers-reduced-motion: no-preference) {
