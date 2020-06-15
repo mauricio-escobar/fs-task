@@ -12,12 +12,17 @@ export default class TasksList extends Component {
     this.deleteTask = this.deleteTask.bind(this);
     this.removeAllTasks = this.removeAllTasks.bind(this);
     this.searchTitle = this.searchTitle.bind(this);
+    this.changePage = this.changePage.bind(this);
 
     this.state = {
       tasks: [],
       currentTask: null,
       currentIndex: -1,
-      searchTitle: ""
+      searchTitle: "",
+      currentPage: 0,
+      perPage: 10,
+      page_count: 0,
+      page_items: []
     };
   }
 
@@ -36,10 +41,12 @@ export default class TasksList extends Component {
   retrieveTasks() {
     TaskDataService.getAll()
       .then(response => {
+        let page_count = response.data.length / this.state.perPage;
         this.setState({
-          tasks: response.data
+          tasks: response.data,
+          page_count: page_count
         });
-        console.log(response.data);
+        this.changePage(this.state.currentPage);
       })
       .catch(e => {
         console.log(e);
@@ -89,19 +96,38 @@ export default class TasksList extends Component {
   searchTitle() {
     TaskDataService.findByTitle(this.state.searchTitle)
       .then(response => {
+        let page_count = response.data.length / this.state.perPage;
         this.setState({
           tasks: response.data,
-          searchTitle: ""
+          searchTitle: "",
+          page_count: page_count
         });
-        console.log(response.data);
+        this.changePage(this.state.currentPage);
       })
       .catch(e => {
         console.log(e);
       });
   }
 
+  changePage(page_num) {
+    console.log('current page: ', page_num);
+    let page_items = this.state.tasks.slice(page_num * this.state.perPage, (page_num + 1) * this.state.perPage);
+    this.setState({
+      currentPage: page_num,
+      page_items: page_items
+    });
+  }
+
   render() {
-    const { searchTitle, tasks, currentTask, currentIndex } = this.state;
+    const { searchTitle, page_items, currentTask, currentIndex, page_count, currentPage } = this.state;
+
+    const page_navs = [];
+
+    for (let i = 0; i < page_count; i++) {
+      page_navs.push(
+        <li key={i} className="page-item"><button className="page-link" onClick={() => this.changePage(i)}>{i+1}</button></li>
+        );
+    }
 
     return (
       <div className="list row">
@@ -138,7 +164,6 @@ export default class TasksList extends Component {
           <h4>Tasks List</h4>
           <table className="table table-hover">
             <thead><tr>
-              <th>Id</th>
               <th>Title</th>
               <th>Description</th>
               <th>Action</th>
@@ -146,14 +171,13 @@ export default class TasksList extends Component {
             </thead>
             <tbody>
               {
-                tasks &&
-                tasks.map((task, index) => (
+                page_items &&
+                page_items.map((task, index) => (
                   <tr className={
                     (index === currentIndex ? "list-active" : "")
                   }
                   onClick={() => this.setActiveTask(task, index)}
                   key={index}>
-                    <td>{index + 1}</td>
                     <td>{task.title}</td>
                     <td>{task.description}</td>
                     <td>
@@ -172,6 +196,17 @@ export default class TasksList extends Component {
               }
             </tbody>
           </table>
+          <nav aria-label="Page navigation example">
+            <ul className="pagination pg-blue">
+              <li className="page-item">
+                <button className="page-link" onClick={() => this.changePage(currentPage - 1)} disabled={currentPage <= 0 ? 'disabled' : '' }>Previous</button>
+              </li>
+              {page_navs}
+              <li className="page-item">
+                <button className="page-link" onClick={() => this.changePage(currentPage + 1)} disabled={currentPage >= (page_count - 1) ? 'disabled' : '' }>Next</button>
+              </li>
+            </ul>
+          </nav>
 
           <button
             className="m-3 btn btn-sm btn-danger"
