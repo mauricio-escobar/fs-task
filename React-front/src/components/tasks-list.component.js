@@ -85,6 +85,7 @@ export default class TasksList extends Component {
       TaskDataService.delete(task.id)
         .then(response => {
           alert('Successfully deleted');
+          this.refreshList();
         })
         .catch(e => {
           console.log(e);
